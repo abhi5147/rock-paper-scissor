@@ -76,18 +76,23 @@ io.on("connection", socket => {
     socket.on("make-move", ({playerId, myChoice, roomId}) => {
         makeMove(roomId, playerId, myChoice);
 
+        let playerNo=playerId;
+
         socket.emit("add-moving");
 
         if(choices[roomId][0] !== "" && choices[roomId][1] !== ""){
-
             let playerOneChoice = choices[roomId][0];
             let playerTwoChoice = choices[roomId][1];
 
             io.to(roomId).emit("remove-moving");
 
+            if(playerNo==1)
+                io.to(roomId).emit("add-image",playerOneChoice,playerTwoChoice,playerNo);
+            else
+                io.to(roomId).emit("add-image",playerTwoChoice,playerOneChoice,playerNo);
+
             if(playerOneChoice === playerTwoChoice){
-                let message = "Both of you chose " + playerOneChoice + " . So it's draw";
-                io.to(roomId).emit("draw", message);
+                io.to(roomId).emit("draw",myChoice);
                 
             }else if(moves[playerOneChoice] === playerTwoChoice){
                 let enemyChoice = "";

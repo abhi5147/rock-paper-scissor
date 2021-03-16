@@ -3,7 +3,6 @@ const socket = io();
 // DOM Elements
 const createRoomBox = document.getElementById("create-room-box");
 const roomIdInput = document.getElementById("room-id");
-const gameplayChoices = document.getElementById("gameplay-choices");
 const createRoomBtn = document.getElementById("create-room-btn");
 const gameplayScreen = document.querySelector(".gameplay-screen");
 const startScreen = document.querySelector(".start-screen");
@@ -143,18 +142,15 @@ socket.on("player-2-disconnected", () => {
 
 socket.on("draw", (myChoice) => {
     let message = "Draw!";
-    addImage(myChoice,myChoice);
     setWinningMessage(message);
 })
 
 socket.on("player-1-wins", ({myChoice, enemyChoice}) => {
     if(playerId === 1){
-        addImage(myChoice,enemyChoice);
         let message = "You Win!";
         setWinningMessage(message);
         myScorePoints++;
     }else{
-        addImage(enemyChoice,myChoice);
         let message = "You Lose!";
         setWinningMessage(message);
         enemyScorePoints++;
@@ -165,12 +161,10 @@ socket.on("player-1-wins", ({myChoice, enemyChoice}) => {
 
 socket.on("player-2-wins", ({myChoice, enemyChoice}) => {
     if(playerId === 2){
-        addImage(myChoice,enemyChoice);
         let message = "You Win!";
         setWinningMessage(message);
         myScorePoints++;
     }else{
-        addImage(enemyChoice,myChoice);
         let message = "You Lose!";
         setWinningMessage(message);
         enemyScorePoints++;
@@ -182,11 +176,21 @@ socket.on("player-2-wins", ({myChoice, enemyChoice}) => {
 socket.on("remove-moving",()=>{
     document.getElementById("image1").classList.remove("moving");
     document.getElementById("image2").classList.remove("moving");
+    addImage(myChoice,enemyChoice);
 });
 
 socket.on("add-moving",()=>{
     document.getElementById("image1").classList.add("moving");
     document.getElementById("image2").classList.add("moving");
+});
+
+socket.on("add-image",(playerOneChoice,playerTwoChoice,playerNo)=>{
+    if(playerNo==playerId){
+        addImage(playerOneChoice,playerTwoChoice);
+    }
+    else{
+        addImage(playerTwoChoice,playerOneChoice);
+    }
 });
 
 
@@ -200,21 +204,21 @@ function addImage(myChoice,enemyChoice){
     document.getElementById("image2").classList.remove("rockImage");
     document.getElementById("image2").classList.remove("paperImage");
     document.getElementById("image2").classList.remove("scissorImage");
-    if(myChoice=="rock")
+    if(myChoice==="rock")
     {
         document.getElementById("image1").classList.add("rockImage");
     }
-    else if(myChoice=="paper"){
+    else if(myChoice==="paper"){
         document.getElementById("image1").classList.add("paperImage");
     }
     else{
         document.getElementById("image1").classList.add("scissorImage");
     }
-    if(enemyChoice=="rock")
+    if(enemyChoice==="rock")
     {
         document.getElementById("image2").classList.add("rockImage");
     }
-    else if(enemyChoice=="paper"){
+    else if(enemyChoice==="paper"){
         document.getElementById("image2").classList.add("paperImage");
     }
     else{
@@ -301,6 +305,6 @@ function setWinningMessage(message){
     setTimeout(() => {
         removeChoice(myChoice)
         winMessage.innerHTML = "";
-    }, 3000)
+    }, 2000)
 }
 

@@ -13,7 +13,7 @@ const exitRoom = (roomId, player) => {
         delete rooms[roomId];
     }
     else{
-        rooms[roomId][1] = ""
+        rooms[roomId][1] = "";
     }
 }
 
